@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
 import { Field, Int, ObjectType } from "type-graphql";
 
 // you can mess with the types here
@@ -8,6 +8,9 @@ import { Field, Int, ObjectType } from "type-graphql";
 @ObjectType()
 @Entity()
 export class Post {
+  // TypeORM v5 requires this
+  [OptionalProps]?: "updatedAt" | "createdAt"; // id is there automatically
+
   @Field(() => Int)
   @PrimaryKey({ type: "number" })
   id!: number;

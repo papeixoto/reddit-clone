@@ -12,10 +12,14 @@ import session from "express-session";
 import { createClient } from "redis";
 import connectRedis from "connect-redis";
 import cors from "cors";
+// import { User } from "./entities/User";
 
 // creating a main function because we can't top level await
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
+  // to delete a table
+  // await orm.em.nativeDelete(User, {});
+
   await orm.getMigrator().up();
 
   const app = express();

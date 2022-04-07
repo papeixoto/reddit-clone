@@ -22,6 +22,10 @@ export class User {
   @Property({ type: "text", unique: true })
   username!: string;
 
+  @Field(() => String)
+  @Property({ type: "text", unique: true })
+  email!: string;
+
   // does not have field
   // meaning that it only exists as a database column and you cannot query it through graphql
   @Property({ type: "text" })

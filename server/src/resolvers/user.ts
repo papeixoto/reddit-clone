@@ -94,6 +94,7 @@ export class UserResolver {
     @Ctx() { em, redis }: MyContext
   ) {
     const user = await em.findOne(User, { email });
+    console;
     if (!user) {
       // email not in db
       return true;
@@ -101,9 +102,12 @@ export class UserResolver {
 
     const token = v4();
     console.log("TOKEN ", token);
-    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, {
-      EX: 1000 * 60 * 60 * 3, // 3 days
-    });
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "EX",
+      1000 * 60 * 60 * 3 // 3 days
+    );
 
     console.log("redisRes ", redis);
 

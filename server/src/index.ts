@@ -25,7 +25,7 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redisClient = createClient({ legacyMode: true });
+  const redisClient = createClient();
   redisClient.connect().catch(console.error);
 
   app.use(
@@ -67,7 +67,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em, req, res }),
+    context: ({ req, res }) => ({ em: orm.em, req, res, redis: redisClient }),
   });
 
   await apolloServer.start();

@@ -7,6 +7,7 @@ import { isServer } from "../utils/isServer";
 interface NavbarProps {}
 
 export const NavBar: React.FC<NavbarProps> = () => {
+  console.log("nav bar");
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(), // to avoid making extra requests on ssr

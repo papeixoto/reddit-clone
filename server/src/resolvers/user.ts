@@ -42,7 +42,6 @@ export class UserResolver {
     @Arg("newPassword", () => String) newPassword: string,
     @Ctx() { em, redis, req }: MyContext
   ): Promise<UserResponse> {
-    console.log("AQUI SERVER SIDE");
     if (newPassword.length <= 2) {
       return {
         errors: [
@@ -54,7 +53,8 @@ export class UserResolver {
       };
     }
 
-    const userId = await redis.get(FORGET_PASSWORD_PREFIX + token);
+    const redisKey = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(redisKey);
     if (!userId) {
       return {
         errors: [
@@ -82,6 +82,8 @@ export class UserResolver {
     user.password = await argon2.hash(newPassword);
     await em.persistAndFlush(user);
 
+    await redis.del(redisKey);
+
     // login user after change password
     req.session.userId = user.id;
 
@@ -101,7 +103,6 @@ export class UserResolver {
     }
 
     const token = v4();
-    console.log("TOKEN ", token);
     await redis.set(
       FORGET_PASSWORD_PREFIX + token,
       user.id,

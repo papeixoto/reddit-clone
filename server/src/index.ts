@@ -14,11 +14,12 @@ import { AppDataSource } from "./datasource";
 
 // creating a main function because we can't top level await
 const main = async () => {
-  AppDataSource.initialize()
-    .then(() => {
-      // here you can start to work with your database
-    })
-    .catch((error) => console.log(error));
+  try {
+    await AppDataSource.initialize();
+    // here you can start to work with your database
+  } catch (error) {
+    console.log(error);
+  }
 
   const app = express();
 

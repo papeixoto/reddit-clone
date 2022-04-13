@@ -1,33 +1,38 @@
-import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Field, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 @Entity()
-export class User {
-  [OptionalProps]?: "updatedAt" | "createdAt"; // id is there automatically
-
+export class User extends BaseEntity {
   @Field(() => Int)
-  @PrimaryKey({ type: "number" })
+  @PrimaryGeneratedColumn()
   id!: number;
 
   @Field(() => String)
-  @Property({ type: "date" })
-  createdAt: Date = new Date();
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-  @Field(() => String)
-  @Property({ type: "text", unique: true })
+  @Field()
+  @Column({ unique: true })
   username!: string;
 
-  @Field(() => String)
-  @Property({ type: "text", unique: true })
+  @Field()
+  @Column({ unique: true })
   email!: string;
 
   // does not have field
   // meaning that it only exists as a database column and you cannot query it through graphql
-  @Property({ type: "text" })
+  @Column()
   password!: string;
 }

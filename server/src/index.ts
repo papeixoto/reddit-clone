@@ -1,7 +1,5 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -12,20 +10,21 @@ import session from "express-session";
 import Redis from "ioredis";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import { AppDataSource } from "./datasource";
 
 // creating a main function because we can't top level await
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
-  // to delete a table
-  // await orm.em.nativeDelete(User, {});
-
-  await orm.getMigrator().up();
+  AppDataSource.initialize()
+    .then(() => {
+      // here you can start to work with your database
+    })
+    .catch((error) => console.log(error));
 
   const app = express();
 
   const RedisStore = connectRedis(session);
   const redis = new Redis();
-  // redisClient.connect().catch(console.error);
+  // redis.connect().catch(console.error);
 
   app.use(
     cors({
@@ -66,7 +65,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   await apolloServer.start();

@@ -1,5 +1,12 @@
-import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 // you can mess with the types here
 // for example, if I don't want to give the possibility of queryng title I can just remove the @Field
@@ -7,23 +14,20 @@ import { Field, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 @Entity()
-export class Post {
-  // TypeORM v5 requires this
-  [OptionalProps]?: "updatedAt" | "createdAt"; // id is there automatically
-
-  @Field(() => Int)
-  @PrimaryKey({ type: "number" })
+export class Post extends BaseEntity {
+  @Field()
+  @PrimaryGeneratedColumn()
   id!: number;
 
   @Field(() => String)
-  @Property({ type: "date" })
-  createdAt: Date = new Date();
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-  @Field(() => String)
-  @Property({ type: "text" })
+  @Field()
+  @Column()
   title!: string;
 }

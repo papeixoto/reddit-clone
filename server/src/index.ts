@@ -21,6 +21,8 @@ const main = async () => {
     console.log(error);
   }
 
+  AppDataSource.runMigrations();
+
   const app = express();
 
   const RedisStore = connectRedis(session);

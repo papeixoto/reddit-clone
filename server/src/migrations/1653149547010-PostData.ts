@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class FakePosts1650128224539 implements MigrationInterface {
+export class PostData1653149547010 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
         insert into post (title, text, "creatorId") values ('Dangerous Lives of Altar Boys, The', 'Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.', 1);
@@ -295,5 +295,5 @@ export class FakePosts1650128224539 implements MigrationInterface {
             `);
   }
 
-  public async down(_: QueryRunner): Promise<void> {}
+  public async down(queryRunner: QueryRunner): Promise<void> {}
 }

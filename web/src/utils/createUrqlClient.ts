@@ -1,4 +1,9 @@
-import { dedupExchange, Exchange, fetchExchange } from "urql";
+import {
+  dedupExchange,
+  Exchange,
+  fetchExchange,
+  stringifyVariables,
+} from "urql";
 import {
   LoginMutation,
   MeQuery,
@@ -36,6 +41,13 @@ export const cursorPagination = (): Resolver => {
       return undefined;
     }
 
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
+
+    const isItInCache = cache.resolveFieldByKey(
+      entityKey,
+      fieldKey
+    ) as string[];
+    info.partial = !isItInCache;
     const results: string[] = [];
     fieldInfos.forEach((fi) => {
       const data = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string[];

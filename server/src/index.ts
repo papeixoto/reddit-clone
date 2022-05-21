@@ -11,6 +11,7 @@ import Redis from "ioredis";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import { AppDataSource } from "./datasource";
+// import { Post } from "./entities/Post";
 
 // creating a main function because we can't top level await
 const main = async () => {
@@ -21,7 +22,7 @@ const main = async () => {
     console.log(error);
   }
 
-  AppDataSource.runMigrations();
+  // await Post.delete({});
 
   const app = express();
 

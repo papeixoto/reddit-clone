@@ -154,7 +154,7 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true }) // graphql type
   post(@Arg("id", () => Int) id: number): Promise<Post | null> {
-    return Post.findOne({ where: { id } });
+    return Post.findOne({ where: { id }, relations: ["creator"] });
   }
 
   @Mutation(() => Post)

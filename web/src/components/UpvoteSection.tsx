@@ -18,22 +18,30 @@ export const UpvoteSection: FC<Props> = ({ post }) => {
         icon={<ChevronUpIcon />}
         aria-label="upvote post"
         onClick={async () => {
+          if (post.voteStatus === 1) {
+            return;
+          }
           setLoadingState("upvoting");
           await vote({ postId: post.id, value: 1 });
           setLoadingState(null);
         }}
         isLoading={loadingState === "upvoting"}
+        colorScheme={post.voteStatus === 1 ? "green" : undefined}
       />
       <Text>{post.points}</Text>
       <IconButton
         icon={<ChevronDownIcon />}
         aria-label="downvote post"
         onClick={async () => {
+          if (post.voteStatus === -1) {
+            return;
+          }
           setLoadingState("downvoting");
           await vote({ postId: post.id, value: -1 });
           setLoadingState(null);
         }}
         isLoading={loadingState === "downvoting"}
+        colorScheme={post.voteStatus === -1 ? "red" : undefined}
       />
     </Flex>
   );

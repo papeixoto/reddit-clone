@@ -49,20 +49,53 @@ export class PostResolver {
     @Arg("value", () => Int) value: number,
     @Ctx() { req }: MyContext
   ) {
+    const { userId } = req.session;
     const isUpvote = value !== -1;
     const realValue = isUpvote ? 1 : -1;
-    const { userId } = req.session;
-    await AppDataSource.query(
-      `
-    START TRANSACTION;  
-    insert into upvote("userId", "postId", value)
-    values (${userId}, ${postId}, ${realValue});
-    update post
-    set points = points + ${realValue}
-    where id = ${postId};
-    COMMIT;
-    `
-    );
+
+    const upvote = await Upvote.findOne({ where: { postId, userId } });
+
+    // the user has voted on the post before
+    // and are changing their vote
+    if (upvote && upvote.value !== realValue) {
+      await AppDataSource.transaction(async (tm) => {
+        tm.query(
+          `
+          update upvote
+          set value = $1
+          where "postId" = $2 and "userId" = $3
+        `,
+          [realValue, postId, userId]
+        );
+
+        tm.query(
+          `
+        update post
+        set points = points + $1
+        where id = $2
+        `,
+          [2 * realValue, postId]
+        );
+      });
+    } else if (!upvote) {
+      // has never voted before
+      await AppDataSource.transaction(async (tm) => {
+        tm.query(
+          `insert into upvote("userId", "postId", value)
+          values (${userId}, ${postId}, ${realValue})`,
+          [userId, postId, realValue]
+        );
+
+        tm.query(
+          `
+        update post
+        set points = points + $1
+        where id = $2
+        `,
+          [realValue, postId]
+        );
+      });
+    }
     return true;
   }
 

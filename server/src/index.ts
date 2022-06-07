@@ -11,6 +11,8 @@ import Redis from "ioredis";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import { AppDataSource } from "./datasource";
+import { createUserLoader } from "./utils/createUserLoader";
+import { createUpvoteLoader } from "./utils/createUpvoteLoader";
 // import { Post } from "./entities/Post";
 
 // creating a main function because we can't top level await
@@ -69,7 +71,13 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, redis }),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      redis,
+      userLoader: createUserLoader(),
+      upvoteLoader: createUpvoteLoader(),
+    }),
   });
 
   await apolloServer.start();

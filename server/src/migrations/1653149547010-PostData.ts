@@ -295,5 +295,5 @@ export class PostData1653149547010 implements MigrationInterface {
             `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {}
 }

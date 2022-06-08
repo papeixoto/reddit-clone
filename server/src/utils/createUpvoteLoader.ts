@@ -1,7 +1,5 @@
 import DataLoader from "dataloader";
-import { User } from "../entities/User";
 import { Upvote } from "../entities/Upvote";
-import { In } from "typeorm";
 
 export const createUpvoteLoader = () =>
   new DataLoader<{ postId: number; userId: number }, Upvote | null>(

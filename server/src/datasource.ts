@@ -6,9 +6,7 @@ import { Upvote } from "./entities/Upvote";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  database: "lireddit",
-  // username: "postgres",
-  // password: "postgres",
+  url: process.env.DATABASE_URL,
   logging: true,
   synchronize: true,
   entities: [Post, User, Upvote],

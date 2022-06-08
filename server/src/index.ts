@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -29,13 +30,13 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL);
   // redis.connect().catch(console.error);
 
   app.use(
     cors({
       credentials: true,
-      origin: ["https://studio.apollographql.com", "http://localhost:3000"],
+      origin: ["https://studio.apollographql.com", process.env.CORS_ORIGIN],
     })
   );
 
@@ -52,12 +53,13 @@ const main = async () => {
         // for localhost
         sameSite: "lax", // csrf
         secure: __prod__, // cookie only works in https
+        domain: __prod__ ? ".biscat.pt" : undefined,
         // for graphql playground
         // sameSite: "none", // csrf
         // secure: true,
       },
       saveUninitialized: false,
-      secret: "keyboard cat",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -85,7 +87,7 @@ const main = async () => {
   // apolloServer.applyMiddleware({ app, cors: corsOptions });
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(4000, () => {
+  app.listen(parseInt(process.env.PORT), () => {
     console.log("server started on localhost:4000");
   });
 };

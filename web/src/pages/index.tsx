@@ -8,16 +8,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { useState } from "react";
 import { EditDeletePostButtons } from "../components/EditDeletePostButtons";
 import { Layout } from "../components/Layout";
 import { UpvoteSection } from "../components/UpvoteSection";
-import {
-  PostQuery,
-  PostsQuery,
-  useMeQuery,
-  usePostsQuery,
-} from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
 import { withApollo } from "../utils/withApollo";
 
 const Index = () => {

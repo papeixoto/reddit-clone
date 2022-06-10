@@ -14,6 +14,8 @@ export const NavBar: React.FC<NavbarProps> = () => {
   });
   const apolloClient = useApolloClient();
 
+  console.log(data);
+
   let body = null;
   // data is loading
   if (loading) {

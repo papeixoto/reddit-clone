@@ -6,13 +6,12 @@ import Wrapper from "../../components/Wrapper";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import { toErrorMap } from "../../utils/toErrorMap";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import NextLink from "next/link";
+import { withApollo } from "../../utils/withApollo";
 
 const ChangePassword: React.FC<{}> = () => {
   const router = useRouter();
-  const [, changePassword] = useChangePasswordMutation();
+  const [changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
   const token =
     typeof router.query.token === "string" ? router.query.token : "";
@@ -23,8 +22,10 @@ const ChangePassword: React.FC<{}> = () => {
         initialValues={{ newPassword: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await changePassword({
-            newPassword: values.newPassword,
-            token,
+            variables: {
+              newPassword: values.newPassword,
+              token,
+            },
           });
 
           if (response.data?.changePassword.errors) {
@@ -72,4 +73,4 @@ const ChangePassword: React.FC<{}> = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(ChangePassword);
+export default withApollo()(ChangePassword);
